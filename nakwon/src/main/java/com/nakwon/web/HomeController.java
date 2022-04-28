@@ -45,20 +45,20 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "project/main/main";
+		return "project/location/location";
 	}
 	
-	//로그인 페이지 진입
+	//濡쒓렇�씤 �럹�씠吏� 吏꾩엯
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "project/manager/login";
 	}
 	
-	//로그인 체크
+	//濡쒓렇�씤 泥댄겕
 	@RequestMapping(value="/logincheck",method=RequestMethod.POST)
 	public String logincheck(HttpServletRequest request, ManagerVO vo, RedirectAttributes rttr) throws Exception {
-//		System.out.println("login 메서드 진입");
-//		System.out.println("전달된 데이터 : "+vo);
+//		System.out.println("login 硫붿꽌�뱶 吏꾩엯");
+//		System.out.println("�쟾�떖�맂 �뜲�씠�꽣 : "+vo);
 		
 		HttpSession session = request.getSession();
 		ManagerVO lvo = service.login(vo);
@@ -69,18 +69,18 @@ public class HomeController {
 			return "redirect:/login";
 		}
 		
-		session.setAttribute("member", lvo); //임시코드 신경 ㄴㄴ
+		session.setAttribute("member", lvo); //�엫�떆肄붾뱶 �떊寃� �꽩�꽩
 		
-		return "redirect:/managerMain"; //성공 시 관리자 메인으로 이동
+		return "redirect:/managerMain"; //�꽦怨� �떆 愿�由ъ옄 硫붿씤�쑝濡� �씠�룞
 	}
-	//관리자페이지 메인
+	//愿�由ъ옄�럹�씠吏� 硫붿씤
 	@RequestMapping(value = "/managerMain", method = RequestMethod.GET)
 	public String managerMain(Locale locale, Model model) {
 		
 		return "project/manager/managerMain";
 	}
 	
-	//로그인 페이지 진입
+	//濡쒓렇�씤 �럹�씠吏� 吏꾩엯
 		@RequestMapping(value = "/location", method = RequestMethod.GET)
 		public String location() {
 			return "project/location/location";
