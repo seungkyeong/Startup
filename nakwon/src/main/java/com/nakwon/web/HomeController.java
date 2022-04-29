@@ -45,10 +45,10 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "project/location/location";
+		return "project/main/main";
 	}
 	
-	//濡쒓렇�씤 �럹�씠吏� 吏꾩엯
+	//관리자 로그인 mapping
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "project/manager/login";
@@ -73,17 +73,29 @@ public class HomeController {
 		
 		return "redirect:/managerMain"; //�꽦怨� �떆 愿�由ъ옄 硫붿씤�쑝濡� �씠�룞
 	}
-	//愿�由ъ옄�럹�씠吏� 硫붿씤
+	//관리자 페이지 mapping
 	@RequestMapping(value = "/managerMain", method = RequestMethod.GET)
 	public String managerMain(Locale locale, Model model) {
 		
 		return "project/manager/managerMain";
 	}
 	
-	//濡쒓렇�씤 �럹�씠吏� 吏꾩엯
-		@RequestMapping(value = "/location", method = RequestMethod.GET)
-		public String location() {
-			return "project/location/location";
-		}
+	//오시는길 mapping
+	@RequestMapping(value = "/location", method = RequestMethod.GET)
+	public String location() {
+		return "project/location/location";
+	}
+	
+	//예약 메인 mapping
+	@RequestMapping(value = "/reservationMain", method = RequestMethod.GET)
+	public String reservationMain() {
+		return "project/reservation/reservationMain";
+	}
+	
+	//예약 페이지 mapping
+	@RequestMapping(value = "/reservation", method = RequestMethod.GET)
+	public String reservation() {
+		return "project/reservation/reservation";
+	}
 	
 }
