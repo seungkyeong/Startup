@@ -105,11 +105,25 @@ ul {
 .ui-widget-header .ui-state-default, .ui-button,
 html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {text-align: center;} 
 .ui-widget.ui-widget-content { border: 1px solid #eee; }
-.ui-datepicker-calendar>tbody>tr>td>a { font-size: 12px !important; font-weight: bold !important;}
-.ui-datepicker-calendar>tbody>tr>.ui-state-disabled:hover {cursor: auto; background-color: white;}
-.ui-datepicker-calendar>tbody>tr>td:hover { background-color: #0081cc; opacity: 1; }
-.ui-datepicker-calendar>tbody>tr>td { border-radius: 50% !important; width: 44px; height: 30px; padding: 5px; font-size: 12px; } 
-
+.ui-datepicker-calendar>tbody>tr>td>a { 
+	font-size: 12px !important; 
+	font-weight: bold !important;
+}
+.ui-datepicker-calendar>tbody>tr>.ui-state-disabled:hover {
+	cursor: auto; 
+	background-color: white;
+}
+.ui-datepicker-calendar>tbody>tr>td:hover { 
+	background-color: #0081cc; 
+	opacity: 1; 
+}
+.ui-datepicker-calendar>tbody>tr>td { 
+	border-radius: 50% !important; 
+	width: 44px; 
+	height: 30px;
+	padding: 5px; 
+	font-size: 12px; 
+} 
 </style>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
