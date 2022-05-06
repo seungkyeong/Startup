@@ -79,15 +79,41 @@ ul {
 #Pnum {width: 210px;} 
 #btn-wrap {text-align: center;}
 #courseselect, #menuselect {width: 180px;}
+
 <!-- 달력의 주말 색상 다르게 변경(일: 빨강, 토: 파랑)-->
 .ui-datepicker-calendar > tbody td.ui-datepicker-week-end:first-child a { color: red; }
-.ui-datepicker-calendar > tbody td.ui-datepicker-week-end:last-child a { color: blue; }
-</style>
+.ui-datepicker-calendar > tbody td.ui-datepicker-week-end:last-child a { color: #0099ff; }
+.ui-datepicker-calendar>thead>tr>th:first-child { color: red !important; } 
+.ui-datepicker-calendar>thead>tr>th:last-child { color: #0099ff !important; } 
+.ui-datepicker-calendar {
+	background: white;
+	border: 1px solid white;
+	color: white;
+}
+.ui-datepicker-calendar>thead {
+	background: white;
+	color: black;
+	font-weight: bold;
+	font-size: 14px;
+}
+.ui-datepicker-calendar>tbody {font-size: 14px;}
+.ui-widget-content .ui-state-highlight {background: #ffd700 !important;}
+.ui-datepicker-title {font-size: 14px; padding: 5px;}
+.ui-datepicker select.ui-datepicker-year, .ui-datepicker select.ui-datepicker-month {background: white;}
+.ui-widget-content .ui-widget-header{background: white !important;}
+.ui-state-default, .ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default, .ui-button,
+html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {text-align: center;} 
+.ui-widget.ui-widget-content { border: 1px solid #eee; }
+.ui-datepicker-calendar>tbody>tr>td>a { font-size: 12px !important; font-weight: bold !important;}
+.ui-datepicker-calendar>tbody>tr>.ui-state-disabled:hover {cursor: auto; background-color: white;}
+.ui-datepicker-calendar>tbody>tr>td:hover { background-color: #0081cc; opacity: 1; }
+.ui-datepicker-calendar>tbody>tr>td { border-radius: 50% !important; width: 44px; height: 30px; padding: 5px; font-size: 12px; } 
 
+</style>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
-
 </head>
 <body>
 <%@ include file="../main/top.jsp" %>
@@ -121,16 +147,16 @@ ul {
 		<tr><td class="reservationTitle">예약자명 <span class="essential">*</span></td><td><input class="reservationInput" name="name" type="text" required></td></tr>
 		<tr><td class="reservationTitle">연락처 <span class="essential">*</span></td><td><input class="reservationInput" name="phone" placeholder="'-'를 제외하고 입력해주세요" type="text" required></td></tr>
 		<tr style="border-bottom: 2px solid #dddddd;"><td class="reservationTitle" style="padding-bottom: 15px;">이메일 <span class="essential">*</span></td><td style="padding-bottom: 15px;"><input class="reservationInput" name="email" type="text" required> @ 
-				<select id="domain" name="domain" required>
+				<select id="domain" name="domain" onChange="direct(this)" required>
 					<option value="">도메인 선택</option>
 					<option value="@naver.com">naver.com</option>
 					<option value="@nate.com">nate.com</option>
 					<option value="@gmail.com">gmail.com</option>
 					<option value="@hanmail.com">hanmail.com</option>
-					<option value="1" onclick="direct('direct');">직접입력</option>
+					<option value="direct">직접입력</option>
 				</select>
 				<!-- 직접입력 누르면 나올 inputbox -->
-				<input type="text" id="selBoxDirect" name="selBoxDirect" style="visibility: hidden;">
+				<input type="text" id="selBoxDirect" name="selBoxDirect" style="display: none;">
 			</td>
 		</tr>
 		<tr><td class="reservationTitle" style="padding-top: 15px;">예약일 <span class="essential">*</span></td><td style="padding-top: 15px;"><input type="text" required class="reservationInput" name="publeYear" placeholder="날짜선택(클릭해주세요)" autocomplete="off" >
@@ -196,14 +222,16 @@ ul {
 </div>
 
 <script type="text/javascript">
-function direct(direct){
-	//직접입력을 누를 때 나타남
-    if(direct == "direct") {
-        //$("#selBoxDirect").show();
-        document.getElementById("selBoxDirect").style.visibility="visible";
-      }  else {
-          $("#selBoxDirect").hide();
-      } 
+//도메인 직접입력 눌렀을 경우 직접입력 input박스 보이게 하기
+function direct(e){
+	$("#domain option:selected").each(function () { 
+		if(e.value == "direct"){ //직접입력을 선택할 경우 
+        	$("#selBoxDirect").show(); //input박스 보이게 하기
+        	$("#domain").hide(); //select박스 숨기기
+      	} else { //직접입력 선택 안한 경우 
+          	$("#selBoxDirect").hide(); //input박스 숨기기
+      	} 
+	});
 }
 
 //달력 설정 
@@ -221,8 +249,8 @@ const config = {
 	    changeMonth: true,
 	    changeYear: true,
 	    minDate: 0, //지난 날짜 비활성화
-	    beforeShowDay: disableAllTheseDays
-	    //editable: true
+	    beforeShowDay: disableAllTheseDays,
+	    showMonthAfterYear : true //달보다 월이 면저 표시
 }
 
 //달력 생성
@@ -255,18 +283,6 @@ function courseChange(e){
 		target.appendChild(opt);
 	}
 }
-
-
-/* $('#domain').change(function(){ 
-	$("#domain option:selected").each(function () { 
-		$("#selBoxDirect").hide();
-		if($(this).val()== '1'){ //직접입력일 경우 
-			$("#selBoxDirect").attr("disabled",false); //활성화 
-		} else{ //직접입력이 아닐경우 
-			$("#selBoxDirect").attr("disabled",true); //비활성화 
-		} 
-	}); 
-}); */
 </script>
 
 <%@ include file="../main/footer.jsp" %>
