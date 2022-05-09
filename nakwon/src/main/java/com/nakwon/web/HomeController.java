@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nakwon.domain.ManagerVO;
+import com.nakwon.domain.ReservationVO;
 import com.nakwon.service.ManagerService;
-
+import com.nakwon.service.ReservationService;
 
 /**
  * Handles requests for the application home page.
@@ -30,6 +31,9 @@ public class HomeController {
 	
 	@Inject
 	private ManagerService service;
+	
+	@Inject
+	private ReservationService reservationservice;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -54,11 +58,9 @@ public class HomeController {
 		return "project/manager/login";
 	}
 	
-	//濡쒓렇�씤 泥댄겕
+	//로그인 체크
 	@RequestMapping(value="/logincheck",method=RequestMethod.POST)
 	public String logincheck(HttpServletRequest request, ManagerVO vo, RedirectAttributes rttr) throws Exception {
-//		System.out.println("login 硫붿꽌�뱶 吏꾩엯");
-//		System.out.println("�쟾�떖�맂 �뜲�씠�꽣 : "+vo);
 		
 		HttpSession session = request.getSession();
 		ManagerVO lvo = service.login(vo);
@@ -69,10 +71,28 @@ public class HomeController {
 			return "redirect:/login";
 		}
 		
-		session.setAttribute("member", lvo); //�엫�떆肄붾뱶 �떊寃� �꽩�꽩
+		session.setAttribute("member", lvo); //임시코드 신경 ㄴㄴ
 		
-		return "redirect:/managerMain"; //�꽦怨� �떆 愿�由ъ옄 硫붿씤�쑝濡� �씠�룞
+		return "redirect:/managerMain"; //성공 시 관리자 페이지로 이동
 	}
+	
+	//예약 등록
+	@RequestMapping(value="/registerResv",method=RequestMethod.POST)
+	public String registerResv(HttpServletRequest request, ReservationVO vo, RedirectAttributes rttr) throws Exception {
+		logger.info("registerResv 진입");
+		
+		//예약등록 서비스 실행
+		reservationservice.insertReservation(vo);
+		
+		/*
+		 * if(lvo == null) { //예약 등록 실패 int result = 0;
+		 * rttr.addFlashAttribute("result",result); logger.info("예약 실패"); return
+		 * "redirect:/reservationFail"; //실패 시 예약 실패 페이지로 이동 }
+		 */
+		logger.info("예약 성공");
+		return "redirect:/reservationSuccess"; //성공 시 예약 성공 페이지로 이동
+	}
+	
 	//관리자 페이지 mapping
 	@RequestMapping(value = "/managerMain", method = RequestMethod.GET)
 	public String managerMain(Locale locale, Model model) {
@@ -96,6 +116,24 @@ public class HomeController {
 	@RequestMapping(value = "/reservation", method = RequestMethod.GET)
 	public String reservation() {
 		return "project/reservation/reservation";
+	}
+	
+	//메인1 페이지 mapping
+	@RequestMapping(value = "/Main1", method = RequestMethod.GET)
+	public String Main1() {
+		return "project/main/Main1";
+	}
+	
+	//예약 등록 성공 페이지 mapping
+	@RequestMapping(value = "/reservationSuccess", method = RequestMethod.GET)
+	public String reservationSuccess(Locale locale, Model model) {	
+		return "project/manager/reservationSuccess";
+	}
+	
+	//예약 등록 실패 페이지 mapping
+	@RequestMapping(value = "/reservationFail", method = RequestMethod.GET)
+	public String reservationFail(Locale locale, Model model) {	
+		return "project/manager/reservationFail";
 	}
 	
 }
