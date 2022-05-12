@@ -3,7 +3,7 @@ package com.nakwon.web;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
-
+import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nakwon.domain.ManagerVO;
+import com.nakwon.domain.MenuVO;
 import com.nakwon.domain.ReservationVO;
 import com.nakwon.service.ManagerService;
-import com.nakwon.service.ReservationService;
+import com.nakwon.service.MenuService;
+import com.nakwon.service.ReservationHoldService;
 
 /**
  * Handles requests for the application home page.
@@ -33,7 +35,10 @@ public class HomeController {
 	private ManagerService service;
 	
 	@Inject
-	private ReservationService reservationservice;
+	private MenuService menuservice;
+	
+	@Inject
+	private ReservationHoldService reservationservice;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -76,6 +81,8 @@ public class HomeController {
 		return "redirect:/managerMain"; //성공 시 관리자 페이지로 이동
 	}
 	
+	
+	
 	//예약 등록
 	@RequestMapping(value="/registerResv",method=RequestMethod.POST)
 	public String registerResv(HttpServletRequest request, ReservationVO vo, RedirectAttributes rttr) throws Exception {
@@ -91,6 +98,12 @@ public class HomeController {
 		 */
 		logger.info("예약 성공");
 		return "redirect:/reservationSuccess"; //성공 시 예약 성공 페이지로 이동
+	}
+	
+	//메인 페이지 mapping
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public String main(Locale locale, Model model) {
+		return "project/main/main";
 	}
 	
 	//관리자 페이지 mapping
@@ -112,11 +125,26 @@ public class HomeController {
 		return "project/reservation/reservationMain";
 	}
 	
-	//예약 페이지 mapping
-	@RequestMapping(value = "/reservation", method = RequestMethod.GET)
-	public String reservation() {
-		return "project/reservation/reservation";
+	//예약 페이지 select박스 만들기
+		/*
+		 * @RequestMapping(value="/menuListAll", method=RequestMethod.GET) public void
+		 * menuListAll(Model model) throws Exception {
+		 * System.out.println("MenuVO POST Called"); List<MenuVO> menuList = null;
+		 * menuList = menuservice.menuListAll();
+		 * 
+		 * model.addAttribute("menuList", menuList); }
+		 */
+	
+	 //예약 페이지 mapping
+	 @RequestMapping(value = "/reservation", method = RequestMethod.GET) 
+	 public String reservation(Model model) throws Exception{ 
+		 
+			
+		 model.addAttribute("menuList", menuservice.menuListAll());
+		 System.out.println("MenuVO POST Called");
+		 return "project/reservation/reservation"; 
 	}
+	 
 	
 	//메인1 페이지 mapping
 	@RequestMapping(value = "/Main1", method = RequestMethod.GET)

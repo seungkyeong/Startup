@@ -1,4 +1,5 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -217,9 +218,11 @@ html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:activ
 		<tr style="border-bottom: 2px solid #dddddd;"><td class="reservationTitle" style="padding-bottom: 15px;">메뉴 <span class="essential">*</span></td><td style="padding-bottom: 15px;">
 					<select id="courseselect" name="courseselect" onchange="courseChange(this)" required>
 						<option value="" selected>코스선택</option>
-						<option value="a">만찬(풀코스)</option>
-						<option value="b">정찬(세트메뉴)</option> <!-- 임의로 value 넣어놈, 나중에 db에 있는 코드로 바꿀것임. -->
+						<c:forEach items="${menuList}" var="menu">
+						<option value="">${menu.CodeName}</option>
+						</c:forEach>
 					</select>
+					
 					<select id="menuselect" name="menuselect" required>
 						<option value="">메뉴선택</option>
 					</select>
@@ -317,6 +320,7 @@ function courseChange(e){
 		target.appendChild(opt);
 	}
 }
+
 </script>
 
 <%@ include file="../main/footer.jsp" %>
