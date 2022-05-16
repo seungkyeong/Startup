@@ -15,11 +15,16 @@ public class MenuDAOImpl implements MenuDAO{
 	
 	@Override
 	public void insert(MenuVO vo) throws Exception {
-		sqlSession.insert(namespace+".insert",vo);
+		sqlSession.insert(namespace+".insert", vo);
 	}
 	
 	@Override
 	public List<MenuVO> menuListAll()throws Exception {
 		return sqlSession.selectList(namespace+".menuListAll");
+	}
+	
+	@Override
+	public List<MenuVO> menuCodeListAll(String Code)throws Exception {
+		return sqlSession.selectList(namespace+".menuCodeListAll", Code);
 	}
 }
