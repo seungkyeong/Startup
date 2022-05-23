@@ -6,14 +6,6 @@
 <meta charset="UTF-8">
 <title>manager footer</title>
 <style>
- 	@font-face {
-    	font-family: 'HSGyoulnoonkot';
-   	 	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/HSGyoulnoonkot.woff') format('woff');
-   		font-weight: normal;
-    	font-style: normal;
-	}
-	body {font-family: 'HSGyoulnoonkot';box-sizing: border-box; margin: 0px;}
-      
       .jb-container {
         height: 140px; line-height : 35px;
         background-color: #A4A4A4;

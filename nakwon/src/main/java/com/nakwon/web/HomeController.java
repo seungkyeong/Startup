@@ -122,7 +122,8 @@ public class HomeController {
 
 	// 예약 페이지 mapping
 	@RequestMapping(value = "/reservation", method = RequestMethod.GET)
-	public String reservation() throws Exception {
+	public String reservation(Model model) throws Exception {
+		model.addAttribute("rsrvList", reservationholdservice.rsrvHoldListAll()); //예약보류리스트 불러오기
 		return "project/reservation/reservation";
 	}
 

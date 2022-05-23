@@ -1,0 +1,11 @@
+package com.nakwon.persistence;
+
+import java.util.List;
+
+import com.nakwon.domain.ReservationVO;
+
+public interface ReservationHoldDAO {
+	public void insertReservationHold(ReservationVO vo)  throws Exception; //예약 등록
+	
+	public List<ReservationVO> rsrvHoldListAll() throws Exception;
+}
