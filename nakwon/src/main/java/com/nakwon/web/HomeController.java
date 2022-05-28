@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -16,14 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
 import com.nakwon.domain.ManagerVO;
 import com.nakwon.domain.MenuVO;
 import com.nakwon.domain.ReservationVO;
@@ -123,7 +119,7 @@ public class HomeController {
 	// 예약 페이지 mapping
 	@RequestMapping(value = "/reservation", method = RequestMethod.GET)
 	public String reservation(Model model) throws Exception {
-		model.addAttribute("rsrvList", reservationholdservice.rsrvHoldListAll()); //예약보류리스트 불러오기
+		//model.addAttribute("rsrvList", reservationholdservice.rsrvHoldListAll()); //예약보류리스트 불러오기
 		return "project/reservation/reservation";
 	}
 
@@ -139,7 +135,7 @@ public class HomeController {
 			//System.out.println("MenuVO2 POST2 Called");
 			//System.out.println(list); //select문 실행 결과(list값) 확인 
 			entity = new ResponseEntity<List<MenuVO>>(list, HttpStatus.OK);
-;		} catch(Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace(); //에러일 경우 에러 코드 전송 400 
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
 			System.out.println("error"); 
@@ -151,7 +147,7 @@ public class HomeController {
 	@RequestMapping(value = "/reservation", method = RequestMethod.POST)
 	public String reservationAddPOST(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
 		ReservationVO rsrv = new ReservationVO();
-		try {
+		//try {
 			rsrv.setRsrvCode(request.getParameter("rsrvCode"));
 			rsrv.setName(request.getParameter("name"));
 			rsrv.setPhone(request.getParameter("phone"));
@@ -170,11 +166,15 @@ public class HomeController {
 			
 			//예약등록 실행
 			reservationholdservice.insertReservationHold(rsrv);
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.out.println("error");
-			return "redirect:/reservationFail"; //실패 시 예약 실패 페이지로 이동
-		}
+		//} catch(Exception e) {
+			//e.printStackTrace();
+			//System.out.println("insert error");
+			//if(reservationholdservice.insertReservationHold(rsrv) != null) {
+			//	redirectAttributes.addFlashAttribute("result", result);
+			//}
+			
+			//return "redirect:/reservationSuccess"; //실패 시 alert창 띄우기
+		//}
 		try {
 			redirectAttributes.addAttribute("Name", rsrv.getName()); //redirecet할 곳에 파라미터 보내기, return할 때 ?로 같이 보내면 "--?--"로 mapping이 되어 에러가 남. 
 			redirectAttributes.addAttribute("RsrvDate", request.getParameter("rsrvDate"));
@@ -189,6 +189,7 @@ public class HomeController {
 			e.printStackTrace();
 			System.out.println("redirect error");
 		}
+		
 		return "redirect:/reservationSuccess"; // 성공 시 예약 성공 페이지로 이동
 	}
 
@@ -220,7 +221,15 @@ public class HomeController {
 
 	// 예약 등록 실패 페이지 mapping
 	@RequestMapping(value = "/reservationFail", method = RequestMethod.GET)
-	public String reservationFail(Locale locale, Model model) {
+	public String reservationFail(Model model) throws Exception {
+		try {
+			model.addAttribute("rsrvList", reservationholdservice.rsrvHoldListAll()); //예약보류리스트 불러오기
+			System.out.println(reservationholdservice.rsrvHoldListAll().getClass().getSimpleName());
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("model error");
+		}
+		
 		return "project/reservation/reservationFail";
 	}
 
