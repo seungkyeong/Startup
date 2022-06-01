@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>낙원 관리자 페이지</title>
+<title>낙원 관리자</title>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <style>
 	/*폰트*/
@@ -46,7 +46,7 @@
 
 <section>
 <div class="wrap">
-   <button type="button" id="button" class="btn01">소개</button>
+   <button type="button" id="button" class="btn01" onClick="introducebtn()">소개</button>
    <div class="modal fade" id="PopupRsrv" role="dialog" tabindex="-1">
    </div>
    
@@ -55,8 +55,6 @@
    </div>
     
    <button type="button"  id="button" class="btn03" onclick="rsrvbtn()">예약</button>
-   <div class="modal fade" id="PopupRsrv" role="dialog" tabindex="0">
-   </div>
    
    <button type="button"  id="button" class="btn04">게시판</button>
    <div class="modal fade" id="PopupRsrv" role="dialog" tabindex="">
@@ -67,6 +65,14 @@
 <footer><%@ include file="footer.jsp" %></footer>
 </body>
 <script>
+//소개 팝업 호출
+function introducebtn() {
+	  var url = "http://localhost:8031/project/manager/Introduce/IntroduceList";
+	    // 팝업 호출
+	    $("#Popup").load(url, function() { 
+	   });
+}
+
 //메뉴 팝업 호출
 function menubtn() {
 	  var url = "http://localhost:8031/project/manager/menu/menuList";
@@ -78,7 +84,7 @@ function menubtn() {
 function rsrvbtn() {
 	  var url = "http://localhost:8031/project/manager/reservation/reservationList";	    
 	    // 팝업 호출
-	    $("#PopupRsrv").load(url, function() { 
+	    $("#Popup").load(url, function() { 
 	   });
 } 
 </script>

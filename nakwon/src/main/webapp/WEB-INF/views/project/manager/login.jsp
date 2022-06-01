@@ -5,21 +5,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>낙원 관리자</title>
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
 <style>
 @font-face {
-    font-family: 'HSGyoulnoonkot';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/HSGyoulnoonkot.woff') format('woff');
+    font-family: 'Yeon Sung', cursive;
+    src: url('https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap') ;
     font-weight: normal;
     font-style: normal;
-}
-
+}	
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'HSGyoulnoonkot';
+    font-family: 'Yeon Sung', cursive;
 }
  body {
     min-height: 100vh;
@@ -107,6 +106,7 @@
     opacity: .85;
 }
 </style>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <script type="text/javascript">	
 	function loginCheck2() {
@@ -139,7 +139,7 @@
 
 	<c:if test = "${result==0 }">
 		<script type="text/javascript">
-		 alert("아이디 또는 비밀번호를 잘못 입력하셨습니다.");
+		swal("로그인에 실패하였습니다.", "아이디 또는 비밀번호를 잘못 입력하셨습니다.", "error");
 		</script>
 		</c:if>
 	</div>
