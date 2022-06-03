@@ -33,10 +33,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	]]>
 	</select>
 	
+	<!-- 예약 조회, 예약 수정시 띄우기 -->
 	<select id="userReservationCheck" parameterType="Map" resultType="com.nakwon.domain.ReservationHoldVO">
 		select * 
 		from ReservationHold 
 		where RsrvCode=#{RsrvCode} and Name=#{Name} and Phone=#{Phone}
 	</select>
+	
+	<!-- 예약 삭제 -->
+	<delete id="deleteReservationHold" parameterType="Map">
+		delete from ReservationHold where RsrvCode = #{RsrvCode} and Phone = #{Phone}
+	</delete>
 	
 </mapper>

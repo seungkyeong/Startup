@@ -17,4 +17,9 @@ public class ReservationConfirmDAOImpl implements ReservationConfirmDAO{
 	public ReservationConfirmVO userReservationCheck(Map<String,String> Check) throws Exception {
 		return sqlSession.selectOne(namespace+".userReservationCheck", Check);
 	}
+	
+	@Override
+	public void deleteReservationConfirm(Map<String,String> DeleteInfo)throws Exception {
+		sqlSession.delete(namespace+".deleteReservationConfirm", DeleteInfo);
+	}
 }

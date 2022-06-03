@@ -15,4 +15,6 @@ public interface ReservationHoldService {
 	public List<ReservationHoldVO> listCriteria(Criteria cri) throws Exception;
 	
 	public ReservationHoldVO userReservationCheck(Map<String,String> Check) throws Exception;
+	
+	public void deleteReservationHold(Map<String,String> DeleteInfo) throws Exception;
 }

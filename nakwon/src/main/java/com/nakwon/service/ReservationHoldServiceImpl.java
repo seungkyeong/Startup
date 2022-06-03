@@ -37,4 +37,9 @@ public class ReservationHoldServiceImpl implements ReservationHoldService {
 	public ReservationHoldVO userReservationCheck(Map<String,String> Check) throws Exception{
 		return dao.userReservationCheck(Check);
 	}
+	
+	@Override
+	public void deleteReservationHold(Map<String,String> DeleteInfo)throws Exception {
+		dao.deleteReservationHold(DeleteInfo);
+	}
 }

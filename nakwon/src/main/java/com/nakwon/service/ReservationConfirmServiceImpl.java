@@ -15,4 +15,9 @@ public class ReservationConfirmServiceImpl implements ReservationConfirmService 
 	public ReservationConfirmVO userReservationCheck(Map<String,String> Check) throws Exception{
 		return dao.userReservationCheck(Check);
 	}
+	
+	@Override
+	public void deleteReservationConfirm(Map<String,String> DeleteInfo)throws Exception {
+		dao.deleteReservationConfirm(DeleteInfo);
+	}
 }

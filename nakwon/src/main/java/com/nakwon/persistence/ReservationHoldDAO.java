@@ -14,4 +14,6 @@ public interface ReservationHoldDAO {
 	public List<ReservationHoldVO> listCriteria(com.nakwon.domain.Criteria cri) throws Exception;
 	
 	public ReservationHoldVO userReservationCheck(Map<String,String> Check) throws Exception;
+	
+	public void deleteReservationHold(Map<String,String> DeleteInfo) throws Exception;
 }
