@@ -28,6 +28,7 @@
 			title: "예약이 취소되었습니다.",
 			text: "홈 화면으로 이동합니다.",
 			icon: "success",
+			closeOnClickOutside: false
 		}).then((resultBtn2) => {
 			if(resultBtn2){
 				location.href="http://localhost:8031/main";
@@ -35,6 +36,23 @@
 		});
 	</script>
 </c:if>
+
+<c:if test = "${deleteResult==0 }">
+	<script type="text/javascript">
+		swal({
+			title: "예약이 취소에 실패하였습니다.",
+			text: "홈 화면으로 이동합니다.",
+			icon: "error",
+			closeOnClickOutside: false
+		}).then((resultBtn2) => {
+			if(resultBtn2){
+				location.href="http://localhost:8031/main";
+			}
+		});
+	</script>
+</c:if>
+
+
 </body>
 </html>
 
