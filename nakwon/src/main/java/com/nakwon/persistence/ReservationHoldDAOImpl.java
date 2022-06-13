@@ -46,4 +46,14 @@ public class ReservationHoldDAOImpl implements ReservationHoldDAO{
 	public void deleteReservationHold(Map<String,String> DeleteInfo)throws Exception {
 		sqlSession.delete(namespace+".deleteReservationHold", DeleteInfo);
 	}
+	
+	@Override
+	public void modifyReservationHold(ReservationHoldVO vo) throws Exception { //예약 수정
+		sqlSession.update(namespace + ".modifyReservationHold", vo);
+	}
+	
+	@Override
+	public ReservationHoldVO reservationRead(String RsrvCode) throws Exception { //게시글 등록, return 조회한 vo
+	  return sqlSession.selectOne(namespace + ".reservationModify", RsrvCode);
+	}
 }

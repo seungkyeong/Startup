@@ -13,7 +13,14 @@ public class ReservationConfirmVO {
 	private String Message;
 	private String Code;
 	private String MenuCode;
+	private String MenuCodeName;
 	
+	public String getMenuCodeName() {
+		return MenuCodeName;
+	}
+	public void setMenuCodeName(String menuCodeName) {
+		MenuCodeName = menuCodeName;
+	}
 	public String getRsrvCode() {
 		return RsrvCode;
 	}
@@ -68,12 +75,11 @@ public class ReservationConfirmVO {
 	public void setCode(String code) {
 		Code = code;
 	}
-	
 	@Override
 	public String toString() {
-		return "ReservationVO [RsrvCode=" + RsrvCode + ", Phone=" + Phone + ", Name=" + Name + ", Email=" + Email
-				+ ", RsvDate=" + RsrvDate + ", Pnum=" + Pnum + ", Message=" + Message + ", Code=" + Code + ", MenuCode="
-				+ MenuCode + "]";
+		return "ReservationConfirmVO [RsrvCode=" + RsrvCode + ", Phone=" + Phone + ", Name=" + Name + ", Email=" + Email
+				+ ", RsrvDate=" + RsrvDate + ", Pnum=" + Pnum + ", Message=" + Message + ", Code=" + Code
+				+ ", MenuCode=" + MenuCode + ", MenuCodeName=" + MenuCodeName + "]";
 	}
 	
 	public ReservationConfirmVO() {

@@ -17,4 +17,8 @@ public interface ReservationHoldService {
 	public ReservationHoldVO userReservationCheck(Map<String,String> Check) throws Exception;
 	
 	public void deleteReservationHold(Map<String,String> DeleteInfo) throws Exception;
+	
+	public void modifyReservationHold(ReservationHoldVO vo) throws Exception; //예약수정
+	
+	public ReservationHoldVO reservationRead(String RsrvCode) throws Exception; //관리자 예약 조회
 }

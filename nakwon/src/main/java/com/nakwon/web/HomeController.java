@@ -85,15 +85,12 @@ public class HomeController {
 
 		HttpSession session = request.getSession();
 		ManagerVO lvo = service.login(vo);
-
 		if (lvo == null) {
 			int result = 0;
 			rttr.addFlashAttribute("result", result);
 			return "redirect:/login";
 		}
-
 		session.setAttribute("member", lvo); // 임시코드 신경 ㄴㄴ
-
 		return "redirect:/managerMain"; // 성공 시 관리자 페이지로 이동
 	}
 	
@@ -180,6 +177,7 @@ public class HomeController {
 					rttr.addAttribute("Message", holdvo.getMessage());
 					rttr.addAttribute("Code", holdvo.getCode()); //정찬/만찬
 					rttr.addAttribute("MenuCode", holdvo.getMenuCode()); //메뉴
+					rttr.addAttribute("MenuCodeName", holdvo.getMenuCodeName());
 					rttr.addAttribute("result", result); //조회 결과
 				}
 			}
@@ -206,15 +204,23 @@ public class HomeController {
 	@RequestMapping(value = "/userReservationCheck", method = RequestMethod.GET)
 	public String userReservationCheck(@RequestParam("Name") String Name, @RequestParam("Phone") String Phone, 
 				@RequestParam("Pnum") int Pnum, @RequestParam("Code") String Code, @RequestParam("RsrvDate") Timestamp RsrvDate,
-				@RequestParam("MenuCode") String MenuCode, @RequestParam("Message") String Message,
+				@RequestParam("MenuCode") String MenuCode, @RequestParam("Message") String Message, @RequestParam("MenuCodeName") String MenuCodeName,
 				@RequestParam("RsrvCode") String RsrvCode, @RequestParam("result") int result, Locale locale, Model model) { 
+		String CodeName = "";
+		if(Code.equals("course")) {
+			CodeName = "만찬(풀코스)";
+		}
+		else if(Code.equals("set")) {
+			CodeName = "정찬(세트메뉴)";
+		}
 		try {
 			model.addAttribute("Name", Name);
 			model.addAttribute("Phone", Phone);
 			model.addAttribute("RsrvDate", RsrvDate);
 			model.addAttribute("Pnum", Pnum);
-			model.addAttribute("Code", Code);
+			model.addAttribute("CodeName", CodeName);
 			model.addAttribute("MenuCode", MenuCode);
+			model.addAttribute("MenuCodeName", MenuCodeName);
 			model.addAttribute("Message", Message);
 			model.addAttribute("RsrvCode", RsrvCode);
 			model.addAttribute("result", result);
@@ -237,11 +243,9 @@ public class HomeController {
 	@ResponseBody //데이터를 넘겨줄 때 JSON형태로 변경해 주는 역할을 함. 
 	public ResponseEntity<List<MenuVO>> select_ajax(String Code) throws Exception{
 		ResponseEntity<List<MenuVO>> entity = null;
-		//System.out.println("MenuVO2 POST1 Called"); 
 		//System.out.println(Code); //jsp에서 받은 파라미터 값 확인 
 		try { 
 			List<MenuVO> list = menuservice.menuCodeListAll(Code);//select문 실행 
-			//System.out.println("MenuVO2 POST2 Called");
 			//System.out.println(list); //select문 실행 결과(list값) 확인 
 			entity = new ResponseEntity<List<MenuVO>>(list, HttpStatus.OK);
 		} catch(Exception e) {
@@ -256,44 +260,36 @@ public class HomeController {
 	@RequestMapping(value = "/reservation", method = RequestMethod.POST)
 	public String reservationAddPOST(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
 		ReservationHoldVO rsrv = new ReservationHoldVO();
-		//try {
-			rsrv.setRsrvCode(request.getParameter("rsrvCode"));
-			rsrv.setName(request.getParameter("name"));
-			rsrv.setPhone(request.getParameter("phone"));
-			rsrv.setEmail(request.getParameter("email"));
-			rsrv.setPnum(Integer.parseInt(request.getParameter("Pnum")));
-			rsrv.setCode(request.getParameter("courseselect"));
-			rsrv.setMenuCode(request.getParameter("menuselect"));
-			rsrv.setMessage(request.getParameter("message"));
+		rsrv.setRsrvCode(request.getParameter("rsrvCode"));
+		rsrv.setName(request.getParameter("name"));
+		rsrv.setPhone(request.getParameter("phone"));
+		rsrv.setEmail(request.getParameter("email"));
+		rsrv.setPnum(Integer.parseInt(request.getParameter("Pnum")));
+		rsrv.setCode(request.getParameter("courseselect"));
+		rsrv.setMenuCode(request.getParameter("menuselect"));
+		rsrv.setMenuCodeName(request.getParameter("MenuCodeName"));
+		rsrv.setMessage(request.getParameter("message"));
 			
-			//문자열 -> 시간으로 변환
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //날짜 format
-			Date date = format.parse(request.getParameter("rsrvDate")); //문자열 -> Date타입으로 변경
-			//System.out.println(date.getClass().getSimpleName()); //데이터 타입 확인
-			Timestamp timestamp = new Timestamp(date.getTime()); //Date -> TimeStamp타입으로 변경
-			rsrv.setRsrvDate(timestamp);
+		//문자열 -> 시간으로 변환
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //날짜 format
+		Date date = format.parse(request.getParameter("rsrvDate")); //문자열 -> Date타입으로 변경
+		//System.out.println(date.getClass().getSimpleName()); //데이터 타입 확인
+		Timestamp timestamp = new Timestamp(date.getTime()); //Date -> TimeStamp타입으로 변경
+		rsrv.setRsrvDate(timestamp);
 			
-			//예약등록 실행
-			reservationholdservice.insertReservationHold(rsrv);
-		//} catch(Exception e) {
-			//e.printStackTrace();
-			//System.out.println("insert error");
-			//if(reservationholdservice.insertReservationHold(rsrv) != null) {
-			//	redirectAttributes.addFlashAttribute("result", result);
-			//}
-			
-			//return "redirect:/reservationSuccess"; //실패 시 alert창 띄우기
-		//}
+		//예약등록 실행
+		reservationholdservice.insertReservationHold(rsrv);
+	
 		try {
 			redirectAttributes.addAttribute("Name", rsrv.getName()); //redirecet할 곳에 파라미터 보내기, return할 때 ?로 같이 보내면 "--?--"로 mapping이 되어 에러가 남. 
-			redirectAttributes.addAttribute("RsrvDate", request.getParameter("rsrvDate"));
+			redirectAttributes.addAttribute("RsrvDate", timestamp);
 			redirectAttributes.addAttribute("Pnum", rsrv.getPnum());
 			redirectAttributes.addAttribute("Code", rsrv.getCode());
 			redirectAttributes.addAttribute("MenuCode", rsrv.getMenuCode());
 			redirectAttributes.addAttribute("Message", rsrv.getMessage());
 			redirectAttributes.addAttribute("RsrvCode", rsrv.getRsrvCode());
 			redirectAttributes.addAttribute("CodeName", request.getParameter("CodeName"));
-			redirectAttributes.addAttribute("MenuCodeName", request.getParameter("MenuCodeName"));
+			redirectAttributes.addAttribute("MenuCodeName", rsrv.getMenuCodeName());
 		}catch(Exception e) {
 			e.printStackTrace();
 			System.out.println("redirect error");
@@ -303,7 +299,7 @@ public class HomeController {
 	
 	// 예약 등록 성공 페이지 mapping
 	@RequestMapping(value = "/reservationSuccess", method = RequestMethod.GET)
-	public String reservationSuccess(@RequestParam("Name") String Name, @RequestParam("RsrvDate") String RsrvDate,
+	public String reservationSuccess(@RequestParam("Name") String Name, @RequestParam("RsrvDate") Timestamp RsrvDate,
 			@RequestParam("Pnum") int Pnum, @RequestParam("Code") String Code,
 			@RequestParam("MenuCode") String MenuCode, @RequestParam("Message") String Message,
 			@RequestParam("CodeName") String CodeName, @RequestParam("MenuCodeName") String MenuCodeName,
@@ -330,26 +326,20 @@ public class HomeController {
 		DeleteInfo.put("Phone", Phone);
 		
 		int deleteResult = 0;
-		try {
-			if(result == 2) { //확정 테이블에 있는 경우
-				//확정 테이블에서 예약 삭제
-				reservationconfirmservice.deleteReservationConfirm(DeleteInfo);
-				//보류 테이블에서 예약 삭제
-				reservationholdservice.deleteReservationHold(DeleteInfo);
-				
-				deleteResult = 1;
-				rttr.addFlashAttribute("deleteResult", deleteResult);
-			}else if(result == 1){ //보류 테이블에만 있는 경우
-				//보류 테이블에서 예약 삭제
-				reservationholdservice.deleteReservationHold(DeleteInfo);
-				
-				deleteResult = 1;
-				rttr.addFlashAttribute("deleteResult", deleteResult);
+		try { 
+			if(result == 2) { //확정 테이블에 있는 경우 //확정 테이블에서 예약 삭제
+				reservationconfirmservice.deleteReservationConfirm(DeleteInfo); 
+				reservationholdservice.deleteReservationHold(DeleteInfo); //보류 테이블에서 예약 삭제 
+				deleteResult = 1; 
+			} else if(result == 1){ //보류 테이블에만 있는 경우 //보류 테이블에서 예약 삭제
+				reservationholdservice.deleteReservationHold(DeleteInfo); 
+				deleteResult = 1; 
 			}
-		}catch(Exception e) {
+		}catch(Exception e) { 
 			e.printStackTrace();
-			System.out.println("delete error");
+			System.out.println("delete error"); 
 		}
+		rttr.addFlashAttribute("deleteResult", deleteResult);
 		return "redirect:/rsrvDeleteSuccess";
 	}
 	
@@ -360,37 +350,118 @@ public class HomeController {
 		return "project/reservation/rsrvDeleteSuccess";
 	}
 	
-	/*
-	 * @RequestMapping(value="/modifyReservation", method=RequestMethod.GET) public
-	 * void modifyReservationGET(String bno, Model model) throws Exception{
-	 * service.userReservationCheck(bno); model.addAttribute(service.read(bno)); }
-	 * 
-	 * @RequestMapping(value="/modifyReservation", method=RequestMethod.POST) public
-	 * String modifyPOST(boardVO board, RedirectAttributes rttr) throws Exception{
-	 * service.modify(board); System.out.println(board.getTitle());
-	 * rttr.addFlashAttribute("msg", "SUCCESS");
-	 * 
-	 * return "redirect:/board/listAll"; }
-	 */
+	//예약 변경 페이지 mapping
+	@RequestMapping(value="/modifyReservation", method=RequestMethod.GET) 
+	public String rsrvModifyGet(@RequestParam("RsrvCode") String RsrvCode, @RequestParam("Phone") String Phone, @RequestParam("Name") String Name,
+			@RequestParam("result") int result, RedirectAttributes rttr, Model model) throws Exception{
+		Map<String,String> ModifyInfo = new HashMap<String, String>(); //예약 확정 테이블로 보낼 map
+		ModifyInfo.put("RsrvCode", RsrvCode);
+		ModifyInfo.put("Name", Name);
+		ModifyInfo.put("Phone", Phone);
+		ReservationHoldVO holdvo;
+		ReservationConfirmVO confirmvo;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		int modifyResult = 0;
+		
+		try { 
+			if(result == 2) { //확정 테이블에 있는 경우 //확정 테이블꺼로 예약 수정, select
+				confirmvo = reservationconfirmservice.userReservationCheck(ModifyInfo);
+				String datetime = sdf.format(confirmvo.getRsrvDate());
+				modifyResult = 1; 
+				model.addAttribute("vo", confirmvo);
+				model.addAttribute("datetime", datetime);
+				model.addAttribute("result", result);
+				model.addAttribute("modifyResult", modifyResult);
+				System.out.println("confirm");
+			} else if(result == 1){ //보류 테이블에만 있는 경우 //보류 테이블에서 예약 수정, select
+				holdvo = reservationholdservice.userReservationCheck(ModifyInfo); 
+				String datetime = sdf.format(holdvo.getRsrvDate());
+				modifyResult = 1; 
+				model.addAttribute("vo", holdvo);
+				model.addAttribute("datetime", datetime);
+				model.addAttribute("result", result);
+				model.addAttribute("modifyResult", modifyResult);
+				System.out.println("hold");
+			}
+		}catch(Exception e) { 
+			e.printStackTrace();
+			System.out.println("modifyGET error"); 
+		}
+		return "project/reservation/reservationModify"; 
+	}
+	
+	// 예약 수정
+	@RequestMapping(value = "/modifyReservation", method = RequestMethod.POST)
+	public String rsrvModifyPOST(@RequestParam("result") int result, Model model, HttpServletRequest request, RedirectAttributes rttr) throws Exception {
+		int modifyResult = 0;
+		try {
+			if(result == 2) { //확정 테이블일 경우, 확정 테이블 수정
+				ReservationConfirmVO rsrv = new ReservationConfirmVO();
+				rsrv.setRsrvCode(request.getParameter("rsrvCode"));
+				rsrv.setName(request.getParameter("name"));
+				rsrv.setPhone(request.getParameter("phone"));
+				rsrv.setEmail(request.getParameter("email"));
+				rsrv.setPnum(Integer.parseInt(request.getParameter("Pnum")));
+				rsrv.setCode(request.getParameter("courseselect"));
+				rsrv.setMenuCode(request.getParameter("menuselect"));
+				rsrv.setMenuCodeName(request.getParameter("MenuCodeName"));
+				rsrv.setMessage(request.getParameter("message"));
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //날짜 format
+				Date date = format.parse(request.getParameter("rsrvDate")); //문자열 -> Date타입으로 변경
+				Timestamp timestamp = new Timestamp(date.getTime()); //Date -> TimeStamp타입으로 변경
+				rsrv.setRsrvDate(timestamp);
+				reservationconfirmservice.modifyReservationConfirm(rsrv); //예약 수정
+				rttr.addAttribute("Name", rsrv.getName()); 
+				rttr.addAttribute("Phone", rsrv.getPhone());
+				rttr.addAttribute("RsrvCode", rsrv.getRsrvCode());
+				rttr.addAttribute("Pnum", rsrv.getPnum());
+				rttr.addAttribute("RsrvDate", rsrv.getRsrvDate()); 
+				rttr.addAttribute("Message", rsrv.getMessage());
+				rttr.addAttribute("Code", rsrv.getCode()); 
+				rttr.addAttribute("MenuCode", rsrv.getMenuCode());
+				rttr.addAttribute("MenuCodeName", rsrv.getMenuCodeName());
+				modifyResult = 1;
+				
+			} else if(result == 1){ //보류 테이블일 경우, 보류 테이블 수정
+				ReservationHoldVO rsrv = new ReservationHoldVO();
+				rsrv.setRsrvCode(request.getParameter("rsrvCode"));
+				rsrv.setName(request.getParameter("name"));
+				rsrv.setPhone(request.getParameter("phone"));
+				rsrv.setEmail(request.getParameter("email"));
+				rsrv.setPnum(Integer.parseInt(request.getParameter("Pnum")));
+				rsrv.setCode(request.getParameter("courseselect"));
+				rsrv.setMenuCode(request.getParameter("menuselect"));
+				rsrv.setMenuCodeName(request.getParameter("MenuCodeName"));
+				rsrv.setMessage(request.getParameter("message"));
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //날짜 format
+				Date date = format.parse(request.getParameter("rsrvDate")); //문자열 -> Date타입으로 변경
+				Timestamp timestamp = new Timestamp(date.getTime()); //Date -> TimeStamp타입으로 변경
+				rsrv.setRsrvDate(timestamp);
+				reservationholdservice.modifyReservationHold(rsrv); //예약 수정
+				rttr.addAttribute("Name", rsrv.getName()); 
+				rttr.addAttribute("Phone", rsrv.getPhone());
+				rttr.addAttribute("RsrvCode", rsrv.getRsrvCode());
+				rttr.addAttribute("Pnum", rsrv.getPnum());
+				rttr.addAttribute("RsrvDate", rsrv.getRsrvDate()); 
+				rttr.addAttribute("Message", rsrv.getMessage());
+				rttr.addAttribute("Code", rsrv.getCode()); 
+				rttr.addAttribute("MenuCode", rsrv.getMenuCode()); 
+				rttr.addAttribute("MenuCodeName", rsrv.getMenuCodeName());
+				modifyResult = 1;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("modifyPOST error"); 
+		}
+		rttr.addAttribute("result", result);
+		rttr.addFlashAttribute("modifyResult", modifyResult);
+		return "redirect:/userReservationCheck"; // 성공 시 예약 수정 페이지로 이동
+	}
 
 	// 메인1 페이지 mapping
 	@RequestMapping(value = "/Main1", method = RequestMethod.GET)
 	public String Main1() {
 		return "project/main/Main1";
-	}
-
-	// 예약 등록 실패 페이지 mapping
-	@RequestMapping(value = "/reservationFail", method = RequestMethod.GET)
-	public String reservationFail(Model model) throws Exception {
-		try {
-			model.addAttribute("rsrvList", reservationholdservice.rsrvHoldListAll()); //예약보류리스트 불러오기
-			System.out.println(reservationholdservice.rsrvHoldListAll().getClass().getSimpleName());
-		}catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("model error");
-		}
-		
-		return "project/reservation/reservationFail";
 	}
 
 }

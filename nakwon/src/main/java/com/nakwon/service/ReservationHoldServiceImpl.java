@@ -42,4 +42,16 @@ public class ReservationHoldServiceImpl implements ReservationHoldService {
 	public void deleteReservationHold(Map<String,String> DeleteInfo)throws Exception {
 		dao.deleteReservationHold(DeleteInfo);
 	}
+	
+	//예약 수정
+	@Override
+	public void modifyReservationHold(ReservationHoldVO vo) throws Exception {
+		dao.modifyReservationHold(vo);
+	}
+	
+	//관리자 예약 조회
+	@Override
+	  public ReservationHoldVO reservationRead(String RsrvCode) throws Exception {
+	    return dao.reservationRead(RsrvCode);
+	}
 }
