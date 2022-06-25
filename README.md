@@ -1,2 +1,1 @@
-# Startup
-Startup project
+# 음식점 예약, 관리 웹 사이트
